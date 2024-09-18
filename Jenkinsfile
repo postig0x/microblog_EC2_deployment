@@ -48,8 +48,8 @@ pipeline {
       stage ('Deploy') {
             steps {
                 sh '''#!/bin/bash
-                source venv/bin/activate
-                nohup gunicorn -b :5000 -w 4 microblog:app > /dev/null 2>&1 &
+                sudo systemctl restart microblog
+                sleep 2
                 '''
             }
         }
