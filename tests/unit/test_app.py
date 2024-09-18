@@ -19,3 +19,9 @@ def client(app):
 def test_config(client):
     """Test the test client creation"""
     assert client
+
+def test_explore(client):
+    """Test the /explore route"""
+    response = client.get('/explore')
+    assert response.status_code == 200
+
