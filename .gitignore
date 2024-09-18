@@ -1,0 +1,7 @@
+__pycache__/
+app.db
+app/**/__pycache__/
+app/translations/**/*.mo
+logs/
+migrations/**/__pycache__/
+venv/
