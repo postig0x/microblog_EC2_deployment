@@ -23,5 +23,11 @@ def test_config(client):
 def test_explore(client):
     """Test the /explore route"""
     response = client.get('/explore')
-    assert response.status_code == 200
+    # should redirect to login
+    assert response.status_code == 302
+    assert '/login' in response.location
 
+def test_login(client):
+    """test auth route"""
+    response = client.get('/auth/login')
+    assert response.status_code == 200
