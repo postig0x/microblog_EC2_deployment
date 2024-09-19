@@ -29,16 +29,15 @@ By completing this project, we develop our skills in creating CI/CD pipelines, p
 
 8. Edit NginX config located in `/etc/nginx/sites-enabled/default`:
 
+    ```
+    location / {
+    proxy_pass http://127.0.0.1:5000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+    ```
 
-```
-location / {
-proxy_pass http://127.0.0.1:5000;
-proxy_set_header Host $host;
-proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-}
-```
-
-> This configuration is setting up a reverse proxy for requests to the root URL `/`. Incoming requests will be forwarded to `http://127.0.0.1:5000`, and each forwarded request will have their `Host` and `X-Forwarded-For` headers modified to be the same as what the client provides. 
+    > This configuration is setting up a reverse proxy for requests to the root URL `/`. Incoming requests will be forwarded to `http://127.0.0.1:5000`, and each forwarded request will have their `Host` and `X-Forwarded-For` headers modified to be the same as what the client provides. 
 
 9. Restart nginx to activate the new config: `sudo systemctl restart nginx`
 
@@ -68,26 +67,26 @@ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 	
     2. `gunicorn` makes the Jenkins deploy step never complete because the server runs indefinitely, so we want to move the server step into a separate process that won't run within the Deploy step itself. In order to do that, we have to create a daemon process with `sudo vim /etc/systemd/system/microblog.service`:
 
-```
-[Unit]
-Description=gunicorn service to deploy microblog
-After=network.target
+        ```
+        [Unit]
+        Description=gunicorn service to deploy microblog
+        After=network.target
 
-[Service]
-User=jenkins
-Group=jenkins
-WorkingDirectory=/var/lib/jenkins/workspace/workload_3_main/
-Environment="PATH=/var/lib/jenkins/workspace/workload_3_main/venv/bin"
-ExecStart=/var/lib/jenkins/workspace/workload_3_main/venv/bin/gunicorn -w 4 -b :5000 microblog:app
+        [Service]
+        User=jenkins
+        Group=jenkins
+        WorkingDirectory=/var/lib/jenkins/workspace/workload_3_main/
+        Environment="PATH=/var/lib/jenkins/workspace/workload_3_main/venv/bin"
+        ExecStart=/var/lib/jenkins/workspace/workload_3_main/venv/bin/gunicorn -w 4 -b :5000 microblog:app
+        
+        [Install]
+        WantedBy=multi-user.target
+        ```
 
-[Install]
-WantedBy=multi-user.target
-```
-
-- Reload the systemd manager: `sudo systemctl daemon-reload`
-- Enable the service to start automatically on EC2 boot: `sudo systemctl enable microblog`
-- Start the service: `sudo systemctl start microblog`
-- Verify the status of the service: `sudo systemctl status microblog`
+        - Reload the systemd manager: `sudo systemctl daemon-reload`
+        - Enable the service to start automatically on EC2 boot: `sudo systemctl enable microblog`
+        - Start the service: `sudo systemctl start microblog`
+        - Verify the status of the service: `sudo systemctl status microblog`
 
 The updated 'Deploy' stage will have this line to restart the `microblog` service: `sudo systemctl restart microblog`
 
@@ -132,18 +131,18 @@ The updated 'Deploy' stage will have this line to restart the `microblog` servic
 	
     1. Create a daemon process `node_exporter.service` to run node_exporter:
 	
-    ```
-	[Unit]
-    Description=Node Exporter
-    After=network.target
+        ```
+	    [Unit]
+        Description=Node Exporter
+        After=network.target
 
-    [Service]
-    User=ubuntu
-    ExecStart=/usr/local/bin/node_exporter
-
-    [Install]
-    WantedBy=default.target
-    ```
+        [Service]
+        User=ubuntu
+        ExecStart=/usr/local/bin/node_exporter
+        
+        [Install]
+        WantedBy=default.target
+        ```
 	
     2. Reload `systemd` & start and enable `node_exporter`:
 		  
