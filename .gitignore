@@ -5,3 +5,4 @@ app/translations/**/*.mo
 logs/
 migrations/**/__pycache__/
 venv/
+.DS_Store
