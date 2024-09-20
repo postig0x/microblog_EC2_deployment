@@ -170,7 +170,7 @@ The updated 'Deploy' stage will have this line to restart the `microblog` servic
 
 ## System Design Diagram
 
-![Workload 3 Diagram](assets/Workload3Diagram.png)
+![Workload 3 Diagram](assets/Workload3Diagram2.png)
 
 ## Issues/Troubleshooting
 
